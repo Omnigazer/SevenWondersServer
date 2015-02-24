@@ -50,6 +50,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Server.cs" />
+    <Compile Include="Slicer.cs" />
     <Compile Include="StateObject.cs" />
   </ItemGroup>
   <ItemGroup>

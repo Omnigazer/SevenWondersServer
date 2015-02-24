@@ -13,7 +13,12 @@ namespace _7WondersCore
         public int Gold { get; set; }
         public List<Card> current_booster;
         public List<Card> board;
-        public Card picked_card;        
+        public Card picked_card;                
         public string play_mode;
+
+        public int GetMilitary()
+        {
+            return 4;
+        }
     }
 }

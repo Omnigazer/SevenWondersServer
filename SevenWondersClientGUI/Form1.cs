@@ -20,6 +20,8 @@ namespace SevenWondersClientGUI
         Client client;
         ClientInterface interpace;
         List<Card> current_booner;
+        // !!!
+        string current_playmode;
         string image_folder = "D:/planchik/pics";
         delegate void ShowStringMessageCallBack(string str);
         delegate void ShowCardsCallBack(List<Card> cards);
@@ -47,8 +49,8 @@ namespace SevenWondersClientGUI
             else
             {
                 headlineLabel.Text = "PICK A CARD BITCH";
-                pickcardButton.Enabled = true;
-                sellcardButton.Enabled = false;
+                //pickcardButton.Enabled = true;
+                //sellcardButton.Enabled = false;
                 
                 
                 ShowStringMessage("Cards in booster: " + cards.Count);
@@ -95,9 +97,11 @@ namespace SevenWondersClientGUI
             }
             else
             {
-                headlineLabel.Text = "PLAY THE CARD BITCH";
-                pickcardButton.Enabled = false;
-                sellcardButton.Enabled = true;                
+                GameCommand command = new GameCommand("PlayMode", current_playmode);
+                interpace.Send(command);
+                //headlineLabel.Text = "PLAY THE CARD BITCH";
+                //pickcardButton.Enabled = false;
+                //sellcardButton.Enabled = true;                
             }            
         }
 
@@ -144,19 +148,28 @@ namespace SevenWondersClientGUI
                         card_boxes.Add(new PictureBox());
                     }
                 }
-                for (int i = 0; i < cards.Count; i++)
+                var groups = cards.OrderBy(card => card.Color).GroupBy(card => card.Color);                
+                int j = 0;
+                int k = 0;
+                foreach (var group in groups)
                 {
-                    Card card = cards[i];
-                    PictureBox pbox = card_boxes[i];
-                    pbox.Parent = boardContainer;
-                    pbox.Left = wonderBox.Left - 44 * (i + 1);
-                    pbox.Top = wonderBox.Top - 80 * (i + 1);
-                    pbox.Width = 208;
-                    pbox.Height = 320;
-                    string image_filename = image_folder + "/" + card.Name + ".jpg";
-                    pbox.BackgroundImage = Image.FromFile(image_filename);
-                    pbox.SendToBack();
-                }
+                    int i=0;
+                    foreach(var card in group)
+                    {                                                
+                        PictureBox pbox = card_boxes[k];
+                        pbox.Parent = boardContainer;
+                        pbox.Left = wonderBox.Left - 44 * (i + 1) + 220 * j;
+                        pbox.Top = wonderBox.Top - 80 * (i + 1);
+                        pbox.Width = 208;
+                        pbox.Height = 320;
+                        string image_filename = image_folder + "/" + card.Name + ".jpg";
+                        pbox.BackgroundImage = Image.FromFile(image_filename);
+                        pbox.SendToBack();
+                        i++;
+                        k++;
+                    }
+                    j++;
+                }            
             }
         }
 
@@ -171,22 +184,30 @@ namespace SevenWondersClientGUI
             startclientButton.Enabled = false;
         }
 
+        /*
         private void pickcardButton_Click(object sender, EventArgs e)
         {
             GameCommand command = new GameCommand("CardPick", current_booner.First().Id.ToString());
             interpace.Send(command);
         }
+         */
 
         private void sellcardButton_Click(object sender, EventArgs e)
         {
-            GameCommand command = new GameCommand("PlayMode", "Sell");
+            current_playmode = "Sell";
+            GameCommand command = new GameCommand("CardPick", current_booner.First().Id.ToString());
             interpace.Send(command);
+            //GameCommand command = new GameCommand("PlayMode", "Sell");
+            //interpace.Send(command);
         }
 
         private void playcardButton_Click(object sender, EventArgs e)
         {
-            GameCommand command = new GameCommand("PlayMode", "Play");
+            current_playmode = "Play";
+            GameCommand command = new GameCommand("CardPick", current_booner.First().Id.ToString());
             interpace.Send(command);
+            //GameCommand command = new GameCommand("PlayMode", "Play");
+            //interpace.Send(command);
         }               
     }
 }

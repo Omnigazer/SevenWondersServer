@@ -31,7 +31,6 @@
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.startclientButton = new System.Windows.Forms.Button();
             this.wonderBox = new System.Windows.Forms.PictureBox();
-            this.pickcardButton = new System.Windows.Forms.Button();
             this.sellcardButton = new System.Windows.Forms.Button();
             this.moezolotoLabel = new System.Windows.Forms.Label();
             this.headlineLabel = new System.Windows.Forms.Label();
@@ -67,19 +66,9 @@
             this.wonderBox.TabIndex = 3;
             this.wonderBox.TabStop = false;
             // 
-            // pickcardButton
-            // 
-            this.pickcardButton.Location = new System.Drawing.Point(444, 51);
-            this.pickcardButton.Name = "pickcardButton";
-            this.pickcardButton.Size = new System.Drawing.Size(85, 23);
-            this.pickcardButton.TabIndex = 4;
-            this.pickcardButton.Text = "Pick a Card";
-            this.pickcardButton.UseVisualStyleBackColor = true;
-            this.pickcardButton.Click += new System.EventHandler(this.pickcardButton_Click);
-            // 
             // sellcardButton
             // 
-            this.sellcardButton.Location = new System.Drawing.Point(444, 109);
+            this.sellcardButton.Location = new System.Drawing.Point(444, 80);
             this.sellcardButton.Name = "sellcardButton";
             this.sellcardButton.Size = new System.Drawing.Size(85, 23);
             this.sellcardButton.TabIndex = 5;
@@ -107,7 +96,7 @@
             // 
             // playcardButton
             // 
-            this.playcardButton.Location = new System.Drawing.Point(444, 80);
+            this.playcardButton.Location = new System.Drawing.Point(444, 51);
             this.playcardButton.Name = "playcardButton";
             this.playcardButton.Size = new System.Drawing.Size(85, 23);
             this.playcardButton.TabIndex = 9;
@@ -134,7 +123,6 @@
             this.Controls.Add(this.headlineLabel);
             this.Controls.Add(this.moezolotoLabel);
             this.Controls.Add(this.sellcardButton);
-            this.Controls.Add(this.pickcardButton);
             this.Controls.Add(this.startclientButton);
             this.Controls.Add(this.listBox1);
             this.Name = "Form1";
@@ -151,7 +139,6 @@
         private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.Button startclientButton;
         private System.Windows.Forms.PictureBox wonderBox;
-        private System.Windows.Forms.Button pickcardButton;
         private System.Windows.Forms.Button sellcardButton;
         private System.Windows.Forms.Label moezolotoLabel;
         private System.Windows.Forms.Label headlineLabel;

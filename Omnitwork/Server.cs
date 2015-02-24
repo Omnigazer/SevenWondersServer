@@ -111,81 +111,41 @@ namespace Omnitwork
             {                  
                 MemoryStream current_stream = reserved_connections[handler].CurrentStream;
                 current_stream.Write(state.buffer, 0, bytesRead);
-
-                //state.sb.Append(Encoding.ASCII.GetString(
-                //    state.buffer, 0, bytesRead));                
-                //content = state.sb.ToString();
-
-                if (state.waiting_for_header)
+                Console.WriteLine("Read {0} bytes from socket.", bytesRead);
+                object command = Slicer.Slice(current_stream, state);
+                while (command != null)
                 {
-                    if (current_stream.Position >= 4)
-                    {
-                        int buffer_offset = (int)current_stream.Position;
-                        byte[] tmp = new byte[4];
-                        current_stream.Position = 0;
-                        current_stream.Read(tmp, 0, 4);
-                        state.expected_bytes = BitConverter.ToInt32(tmp, 0);
-                        state.waiting_for_header = false;
-                        current_stream.Position = buffer_offset;
-                    }
-                }
-                if (!state.waiting_for_header)
-                {
-                    if (current_stream.Position >= state.expected_bytes + 4)
-                    {
-                        int buffer_offset = (int)current_stream.Position;
-                        byte[] body = new byte[state.expected_bytes];
-                        current_stream.Position = 4;
-                        current_stream.Read(body, 0, body.Length);
-                        int remainder_length = buffer_offset - (int)current_stream.Position;
-                        MemoryStream mem_stream = new MemoryStream(body.Length);
-                        mem_stream.Write(body, 0, body.Length);
-                        BinaryFormatter bf = new BinaryFormatter();
-                        mem_stream.Position = 0;
-                        object command = bf.Deserialize(mem_stream);
-                        if (command is ApplicationCommand)
-                        {
-                            Console.WriteLine("==============");
-                            Console.WriteLine("Read {0} bytes from socket.", body.Length);
-                            Console.WriteLine("Type : {0}", ((Command)command).type);
-                            Console.WriteLine("Message : {0}", ((Command)command).body);
-                            Console.WriteLine("==============");
-                            // execute command
-                            // ВАРНУНГ !!!
-                            // КАСТЫЛЬ
-                            foreach (IGameInterface game in games)
-                            {                                
-                                game.Execute(reserved_connections[handler],(ApplicationCommand)command);
-                            }
-                        }
-                        else if (command is Command)
-                        {
-                            // execute command
-                        }
-                        else
-                        {
-                            throw new NotImplementedException("Unknown message format");
-                        }
-                        if (remainder_length > 0)
-                        {
-                            byte[] remainder = new byte[remainder_length];
-                            current_stream.Read(remainder, 0, remainder_length);
-                            current_stream.SetLength(65536);
-                            current_stream.Position = 0;
-                            current_stream.Write(remainder, 0, remainder.Length);
-                            
-                            state.sb.Clear();
-                        }
-                        else 
-                        {
-                            current_stream.Position = 0;
-                            current_stream.SetLength(65536);                            
-                        }
-                        state.waiting_for_header = true;
-                    }
-                }
+                    HandleCommand(handler, command);
+                    command = Slicer.Slice(current_stream, state);
+                }                
                 handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
                 new AsyncCallback(ReadCallback), state);
+            }
+        }
+
+        public void HandleCommand(Socket source, object command)
+        {
+            if (command is ApplicationCommand)
+            {
+                Console.WriteLine("==============");                
+                Console.WriteLine("Type : {0}", ((Command)command).type);
+                Console.WriteLine("Message : {0}", ((Command)command).body);
+                Console.WriteLine("==============");
+                // execute command
+                // ВАРНУНГ !!!
+                // КАСТЫЛЬ
+                foreach (IGameInterface game in games)
+                {
+                    game.Execute(reserved_connections[source], (ApplicationCommand)command);
+                }
+            }
+            else if (command is Command)
+            {
+                // execute command
+            }
+            else
+            {
+                throw new NotImplementedException("Unknown message format");
             }
         }
 

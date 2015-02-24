@@ -64,7 +64,7 @@ namespace _7WondersCore
                                     if (!players.Where(plr => plr.play_mode == null).Any())
                                     {
                                         ProcessCardPlays();
-                                        ResetPlayerStates();
+                                        ResetPlayerStates();                                        
                                         NextTurn();
                                     }                                    
                                     break;
@@ -177,6 +177,8 @@ namespace _7WondersCore
                     DiscardPile.Add(player.current_booster.First());
                 }
                 // тут надо меряться пальцами
+                ProcessMilitary();
+                //
                 if (current_age != Age.III)
                 {
                     current_age++;
@@ -188,9 +190,40 @@ namespace _7WondersCore
                 }
                 else
                 {
-                    // ну тут надо игру заканчивать, че
+                    foreach (Player player in players)
+                    {
+                        foreach (Card card in player.board)
+                        {
 
+                        }
+                    }
+                    // ну тут надо игру заканчивать, че
                 }
+            }
+        }
+
+        public void ProcessMilitary()
+        {
+            // тут можно подумать о дипломатии
+            // войну проводим по кругу в сторону соседа справа
+            for (int i = 0; i < players.Count - 1; i++)
+            {
+                if (players[i].GetMilitary() < players[i + 1].GetMilitary())
+                {
+                    // players[i+1] + age dependent victory token
+                }
+                else if (players[i].GetMilitary() > players[i + 1].GetMilitary())
+                {
+                    // players[i] + age dependent victory token
+                }                
+            }
+            if (players.First().GetMilitary() < players.Last().GetMilitary())
+            {
+                // players.Last() + age dependent victory token
+            }
+            else if (players.First().GetMilitary() > players.Last().GetMilitary())
+            {
+                // players.First() + age dependent victory token
             }
         }
 
@@ -307,7 +340,7 @@ namespace _7WondersCore
                             card.Age = (Age)Enum.Parse(typeof(Age), elemList[i].InnerText);
                             break;
                         case "color":
-                            card.Color = Color.FromName(elemList[i].InnerText);
+                            card.Color = (CardColor)Enum.Parse(typeof(CardColor),elemList[i].InnerText);
                             break;                            
                         case "fame":
                             card.Fame = elemList[i].InnerText;
