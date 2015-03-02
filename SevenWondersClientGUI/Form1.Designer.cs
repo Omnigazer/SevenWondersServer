@@ -31,11 +31,10 @@
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.startclientButton = new System.Windows.Forms.Button();
             this.wonderBox = new System.Windows.Forms.PictureBox();
-            this.sellcardButton = new System.Windows.Forms.Button();
             this.moezolotoLabel = new System.Windows.Forms.Label();
             this.headlineLabel = new System.Windows.Forms.Label();
-            this.playcardButton = new System.Windows.Forms.Button();
             this.boardContainer = new System.Windows.Forms.GroupBox();
+            this.boosterContainer = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)(this.wonderBox)).BeginInit();
             this.boardContainer.SuspendLayout();
             this.SuspendLayout();
@@ -60,26 +59,16 @@
             // 
             // wonderBox
             // 
-            this.wonderBox.Location = new System.Drawing.Point(283, 304);
+            this.wonderBox.Location = new System.Drawing.Point(65, 492);
             this.wonderBox.Name = "wonderBox";
-            this.wonderBox.Size = new System.Drawing.Size(783, 270);
+            this.wonderBox.Size = new System.Drawing.Size(1480, 270);
             this.wonderBox.TabIndex = 3;
             this.wonderBox.TabStop = false;
-            // 
-            // sellcardButton
-            // 
-            this.sellcardButton.Location = new System.Drawing.Point(444, 80);
-            this.sellcardButton.Name = "sellcardButton";
-            this.sellcardButton.Size = new System.Drawing.Size(85, 23);
-            this.sellcardButton.TabIndex = 5;
-            this.sellcardButton.Text = "Sell the card";
-            this.sellcardButton.UseVisualStyleBackColor = true;
-            this.sellcardButton.Click += new System.EventHandler(this.sellcardButton_Click);
             // 
             // moezolotoLabel
             // 
             this.moezolotoLabel.AutoSize = true;
-            this.moezolotoLabel.Location = new System.Drawing.Point(572, 199);
+            this.moezolotoLabel.Location = new System.Drawing.Point(589, 51);
             this.moezolotoLabel.Name = "moezolotoLabel";
             this.moezolotoLabel.Size = new System.Drawing.Size(78, 13);
             this.moezolotoLabel.TabIndex = 6;
@@ -94,35 +83,32 @@
             this.headlineLabel.TabIndex = 8;
             this.headlineLabel.Text = "HEADLINE";
             // 
-            // playcardButton
-            // 
-            this.playcardButton.Location = new System.Drawing.Point(444, 51);
-            this.playcardButton.Name = "playcardButton";
-            this.playcardButton.Size = new System.Drawing.Size(85, 23);
-            this.playcardButton.TabIndex = 9;
-            this.playcardButton.Text = "Play the Card";
-            this.playcardButton.UseVisualStyleBackColor = true;
-            this.playcardButton.Click += new System.EventHandler(this.playcardButton_Click);
-            // 
             // boardContainer
             // 
+            this.boardContainer.Controls.Add(this.boosterContainer);
             this.boardContainer.Controls.Add(this.wonderBox);
             this.boardContainer.Location = new System.Drawing.Point(12, 344);
             this.boardContainer.Name = "boardContainer";
-            this.boardContainer.Size = new System.Drawing.Size(1072, 580);
+            this.boardContainer.Size = new System.Drawing.Size(1566, 785);
             this.boardContainer.TabIndex = 10;
             this.boardContainer.TabStop = false;
+            // 
+            // boosterContainer
+            // 
+            this.boosterContainer.Location = new System.Drawing.Point(6, 19);
+            this.boosterContainer.Name = "boosterContainer";
+            this.boosterContainer.Size = new System.Drawing.Size(566, 163);
+            this.boosterContainer.TabIndex = 4;
+            this.boosterContainer.TabStop = false;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1096, 936);
+            this.ClientSize = new System.Drawing.Size(1604, 1157);
             this.Controls.Add(this.boardContainer);
-            this.Controls.Add(this.playcardButton);
             this.Controls.Add(this.headlineLabel);
             this.Controls.Add(this.moezolotoLabel);
-            this.Controls.Add(this.sellcardButton);
             this.Controls.Add(this.startclientButton);
             this.Controls.Add(this.listBox1);
             this.Name = "Form1";
@@ -139,11 +125,10 @@
         private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.Button startclientButton;
         private System.Windows.Forms.PictureBox wonderBox;
-        private System.Windows.Forms.Button sellcardButton;
         private System.Windows.Forms.Label moezolotoLabel;
         private System.Windows.Forms.Label headlineLabel;
-        private System.Windows.Forms.Button playcardButton;
         private System.Windows.Forms.GroupBox boardContainer;
+        private System.Windows.Forms.GroupBox boosterContainer;
     }
 }
 

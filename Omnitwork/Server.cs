@@ -111,7 +111,7 @@ namespace Omnitwork
             {                  
                 MemoryStream current_stream = reserved_connections[handler].CurrentStream;
                 current_stream.Write(state.buffer, 0, bytesRead);
-                Console.WriteLine("Read {0} bytes from socket.", bytesRead);
+                //Console.WriteLine("Read {0} bytes from socket.", bytesRead);
                 object command = Slicer.Slice(current_stream, state);
                 while (command != null)
                 {
@@ -153,9 +153,17 @@ namespace Omnitwork
         {            
             byte[] union = new byte[4 + data.Length];
             BitConverter.GetBytes(data.Length).CopyTo(union, 0);
-            data.CopyTo(union, 4);                        
-            handler.BeginSend(union, 0, union.Length, 0,
-                new AsyncCallback(SendCallback), handler);
+            data.CopyTo(union, 4);
+            try
+            {
+                handler.BeginSend(union, 0, union.Length, 0,
+                    new AsyncCallback(SendCallback), handler);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Connection unexpectedly closed on stream");
+                Console.WriteLine(e.Message);
+            }
         }
 
         private  void SendCallback(IAsyncResult ar)
@@ -165,7 +173,7 @@ namespace Omnitwork
                 Socket handler = (Socket)ar.AsyncState;
                 // Complete sending the data to the remote device.
                 int bytesSent = handler.EndSend(ar);
-                Console.WriteLine("Sent {0} bytes to client.", bytesSent);
+                //Console.WriteLine("Sent {0} bytes to client.", bytesSent);
             }
             catch (Exception e)
             {

@@ -9,11 +9,18 @@ namespace _7WondersCore
 {
     [Serializable]
     public class GameCommand : ApplicationCommand
-    {
+    {        
+        public GameCommand(string type)
+            : base(type, "")
+        {
+
+        }
+
         public GameCommand(string type, string body)
             : base(type, body)
         {
 
         }
+        
     }
 }

@@ -51,6 +51,9 @@
     <Compile Include="GUI.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tech.cs" />
+    <Compile Include="TechCalculator.cs" />
+    <Compile Include="Wonder.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Omnitwork\Omnitwork.csproj">

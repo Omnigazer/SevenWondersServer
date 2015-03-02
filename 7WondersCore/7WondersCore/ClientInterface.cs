@@ -16,21 +16,39 @@ namespace _7WondersCore
         public StateObject connection_state;
         public GUI gui;
         public List<Card> allcards;
-        public ClientInterface()
+        public List<Wonder> allwonders;
+        // служебное поле, запоминающее, как именно игрок хочет разыграть пикнутую карту
+        public string current_playmode;
+        public ClientInterface(GUI gui)
         {
             allcards = new List<Card>();
-            foreach (Card card in Game.ParseFolder("D:/planchik/Age I"))
+            allwonders = new List<Wonder>();
+            foreach (Card card in Game.ParseForCards("D:/planchik/Age I"))
             {
                 allcards.Add(card);
             }
-            foreach (Card card in Game.ParseFolder("D:/planchik/Age II"))
+            foreach (Card card in Game.ParseForCards("D:/planchik/Age II"))
             {
                 allcards.Add(card);
             }
-            foreach (Card card in Game.ParseFolder("D:/planchik/Age III"))
+            foreach (Card card in Game.ParseForCards("D:/planchik/Age III"))
             {
                 allcards.Add(card);
             }
+            foreach (Card card in Game.ParseForCards("D:/planchik/Age III/Guilds"))
+            {
+                allcards.Add(card);
+            }
+            foreach (Wonder wonder in Game.ParseForWonders("D:/planchik/Wonders", false))
+            {
+                allwonders.Add(wonder);
+            }
+
+            // !!!
+            client = new Client();
+            client.client_interface = this;
+            this.gui = gui;
+            client.StartClient();
         }
         
         public void Execute(ApplicationCommand command)
@@ -49,15 +67,29 @@ namespace _7WondersCore
                         List<Card> tmp = new List<Card>();                        
                         foreach (string id in ids)
                         {
-                            tmp.Add(allcards.Find(card => card.Id.ToString() == id));
-                        }
-                        //gui.ShowCards(game_command.body);
+                            Card card = allcards.Find(crd => crd.Id.ToString() == id);
+                            if (card == null)
+                            {
+                                throw new Exception("CARD NOT FOUND: " + id.ToString());
+                            }
+                            tmp.Add(card);
+                        }                        
                         gui.ShowBooster(tmp);
                         break;
                     }
                 case "PlayCard":
                     {
-                        gui.PromptPlayMode();
+                        if (current_playmode != null)
+                        {
+                            // !!!
+                            // тоже костыль, надо сразу научить игру просить то, что надо
+                            GameCommand response = new GameCommand("PlayMode", current_playmode);
+                            Send(response);
+                        }
+                        else
+                        {
+                            throw new Exception("Empty card play mode");
+                        }
                         break;
                     }
                 case "CurrentGold":
@@ -74,6 +106,23 @@ namespace _7WondersCore
                             tmp.Add(allcards.Find(card => card.Id.ToString() == id));
                         }
                         gui.DisplayBoard(tmp);
+                        break;
+                    }
+                case "Wonder":
+                    {
+                        Wonder wonder = allwonders.Find(wnd => wnd.Id == Convert.ToInt32(command.body));                        
+                        gui.DisplayWonder(wonder);
+                        break;
+                    }
+                case "NewTier":
+                    {
+                        gui.DisplayNewTier();
+                        break;
+                    }
+                case "GameState":
+                    {
+                        int gold = (int)game_command.Data["Gold"];
+                        gui.DisplayGameState(gold);
                         break;
                     }
             }            
@@ -112,6 +161,13 @@ namespace _7WondersCore
             client.Send(connection_state.workSocket, tmp);
         }
 
+        public void PickCard(int id, string playmode)
+        {
+            // превалидация
+            current_playmode = playmode;
+            GameCommand command = new GameCommand("CardPick", id.ToString());
+            Send(command);
+        }
 
         public void SetConnectionState(StateObject state_object)
         {

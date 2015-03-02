@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Omnitwork;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Threading;
 
 namespace _7WondersCore
 {
@@ -24,22 +25,10 @@ namespace _7WondersCore
             this.server = server;
         }
         public Dictionary<Player, GameConnection> connections;
-        public Dictionary<GameConnection, Player> players;        
-
-        /*
-        public void GetData(GameConnection connection)
-        {
-            BinaryFormatter bf = new BinaryFormatter();                        
-            GameCommand command = (GameCommand)bf.Deserialize(connection.CurrentStream);
-            Console.WriteLine(command.body);
-            Send(players[connection],command);
-        }
-        */
+        public Dictionary<GameConnection, Player> players;               
 
         public void Execute(GameConnection sender, ApplicationCommand command)
-        {            
-            // !!!
-            // нет валидации
+        {           
             game.Execute(players[sender], (GameCommand)command);
         }
 
@@ -62,6 +51,10 @@ namespace _7WondersCore
 
         public void Send(Player player, GameCommand command)
         {
+            Console.WriteLine("==============");
+            Console.WriteLine("Type : {0}", command.type);
+            Console.WriteLine("Message : {0}", command.body);
+            Console.WriteLine("==============");
             MemoryStream mem_stream = new MemoryStream(new byte[65536]);
             BinaryFormatter bf = new BinaryFormatter();
             bf.Serialize(mem_stream, command);
@@ -70,16 +63,19 @@ namespace _7WondersCore
             mem_stream.Read(tmp, 0, tmp.Length);
             server.Send(connections[player].socket, tmp);              
         }
-
+        
         public void OnPlayerDropped(object sender, GameConnectionEventArgs e)
         {
-            if (players.ContainsKey(e.Connection))
+            lock (players)
             {
-                Player dropped_player = players[e.Connection];
-                players.Remove(e.Connection);
-                foreach (Player player in players.Values)
+                if (players.ContainsKey(e.Connection))
                 {
-                    Send(player, new GameCommand("Message", "Player " + dropped_player.Name + " dropped"));
+                    Player dropped_player = players[e.Connection];
+                    players.Remove(e.Connection);
+                    foreach (Player player in players.Values)
+                    {
+                        Send(player, new GameCommand("Message", "Player " + dropped_player.Name + " dropped"));
+                    }
                 }
             }
         }

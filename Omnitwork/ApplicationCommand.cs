@@ -12,7 +12,8 @@ namespace Omnitwork
         public ApplicationCommand(string type, string body)
             : base(type, body)
         {
-
+            Data = new Dictionary<string, object>();
         }
+        public Dictionary<string, object> Data { get; set; }
     }
 }
